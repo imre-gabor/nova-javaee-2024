@@ -33,6 +33,12 @@ public class Client  {
 
 	public Client() {
 	}
+	
+	public Client(String address, String name) {
+		super();
+		this.address = address;
+		this.name = name;
+	}
 
 	public Integer getClientid() {
 		return this.clientid;
