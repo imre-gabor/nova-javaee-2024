@@ -38,6 +38,11 @@ public class Account  {
 
 	public Account() {
 	}
+	
+	public Account(double balance) {
+		super();
+		this.balance = balance;
+	}
 
 	public Integer getAccountid() {
 		return this.accountid;
