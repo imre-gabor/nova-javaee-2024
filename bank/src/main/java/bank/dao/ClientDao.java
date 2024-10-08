@@ -1,7 +1,5 @@
 package bank.dao;
 
-import java.util.List;
-
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -14,28 +12,38 @@ import bank.model.Client;
  */
 @Stateless
 @LocalBean
-public class ClientDao {
+public class ClientDao extends AbstractDao<Client, Integer>{
 
 	@PersistenceContext
 	private EntityManager em;
-	
-	public Client findById(Integer id) {
-		return em.find(Client.class, id);
+
+	public ClientDao() {
+		super(Client.class);
+	}
+
+	@Override
+	public EntityManager em() {
+		return em;
 	}
 	
-	public void create(Client client) {
-		em.persist(client);
-	}
-	
-	public void update(Client client) {
-		em.merge(client);
-	}
-	
-	public void delete(Client client) {
-		em.remove(em.merge(client));
-	}
-	
-	public List<Client> findAll() {
-		return em.createNamedQuery("Client.findAll", Client.class).getResultList();
-	}
+//	
+//	public Client findById(Integer id) {
+//		return em.find(Client.class, id);
+//	}
+//	
+//	public void create(Client client) {
+//		em.persist(client);
+//	}
+//	
+//	public void update(Client client) {
+//		em.merge(client);
+//	}
+//	
+//	public void delete(Client client) {
+//		em.remove(em.merge(client));
+//	}
+//	
+//	public List<Client> findAll() {
+//		return em.createNamedQuery("Client.findAll", Client.class).getResultList();
+//	}
 }
