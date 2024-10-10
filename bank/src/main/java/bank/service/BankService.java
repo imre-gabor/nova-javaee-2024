@@ -6,12 +6,16 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import bank.dao.AccountDao;
 import bank.dao.ClientDao;
+import bank.dao.HistoryDao;
 import bank.exception.BankException;
 import bank.model.Account;
 import bank.model.Client;
+import bank.model.History;
 
 /**
  * Session Bean implementation class BankService
@@ -24,6 +28,9 @@ public class BankService implements BankServiceLocal {
 	
 	@EJB
 	private AccountDao accountDao;
+	
+	@EJB
+	private HistoryDao historyDao;
 	
 	@Resource
 	private SessionContext ctx;
@@ -51,15 +58,25 @@ public class BankService implements BankServiceLocal {
 	@Override
 	public void transfer(int fromId, int toId, double amount) throws BankException {
 		try {
+			//logTransfer(fromId, toId, amount); --> lokális hívásnál nem lesz hatása a @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)-nak, és más annotációnak sem 
+			ctx.getBusinessObject(BankServiceLocal.class).logTransfer(fromId, toId, amount);
 			Account fromAccount = getAccountOrThrow(fromId);
 			Account toAccount = getAccountOrThrow(toId);
 
 			toAccount.increase(amount);
 			fromAccount.decrease(amount);
+			
 		} catch (Exception e) {			
 			ctx.setRollbackOnly();
 			throw e;
 		}
+	}
+	
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void logTransfer(int fromId, int toId, double amount) {
+		historyDao.create(new History(String.format("Transfer tried from %d to %d, amount %f", fromId, toId, amount)));
 	}
 
 
