@@ -2,7 +2,9 @@ package bank.service;
 
 import java.util.Date;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
 import bank.dao.AccountDao;
@@ -22,6 +24,9 @@ public class BankService implements BankServiceLocal {
 	
 	@EJB
 	private AccountDao accountDao;
+	
+	@Resource
+	private SessionContext ctx;
 
 	@Override
 	public void createClient(Client client) {
@@ -45,13 +50,16 @@ public class BankService implements BankServiceLocal {
 	
 	@Override
 	public void transfer(int fromId, int toId, double amount) throws BankException {
-		
-		Account fromAccount = getAccountOrThrow(fromId);
-		Account toAccount = getAccountOrThrow(toId);
-		
-		fromAccount.decrease(amount);
-		toAccount.increase(amount);
-		
+		try {
+			Account fromAccount = getAccountOrThrow(fromId);
+			Account toAccount = getAccountOrThrow(toId);
+
+			toAccount.increase(amount);
+			fromAccount.decrease(amount);
+		} catch (Exception e) {			
+			ctx.setRollbackOnly();
+			throw e;
+		}
 	}
 
 
