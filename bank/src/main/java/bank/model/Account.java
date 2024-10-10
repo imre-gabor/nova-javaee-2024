@@ -13,6 +13,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import bank.exception.BankException;
+
 
 /**
  * The persistent class for the account database table.
@@ -56,10 +58,6 @@ public class Account  {
 		return this.balance;
 	}
 
-	public void setBalance(double balance) {
-		this.balance = balance;
-	}
-
 	public Date getCreatedate() {
 		return this.createdate;
 	}
@@ -75,6 +73,18 @@ public class Account  {
 	public void setClient(Client client) {
 		this.client = client;
 	}
+	
+	public void increase(double amount) {
+		this.balance += amount;
+	}
+	
+	public void decrease(double amount) throws BankException {
+		if(amount > balance)
+			throw new BankException("Balance not enough.");
+		
+		this.balance -= amount;
+	}
+	
 
 	@Override
 	public int hashCode() {

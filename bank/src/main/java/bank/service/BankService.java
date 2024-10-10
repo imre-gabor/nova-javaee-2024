@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import bank.dao.AccountDao;
 import bank.dao.ClientDao;
+import bank.exception.BankException;
 import bank.model.Account;
 import bank.model.Client;
 
@@ -43,7 +44,22 @@ public class BankService implements BankServiceLocal {
 	
 	
 	@Override
-	public void transfer(int fromId, int toId, double amount) {
+	public void transfer(int fromId, int toId, double amount) throws BankException {
 		
+		Account fromAccount = getAccountOrThrow(fromId);
+		Account toAccount = getAccountOrThrow(toId);
+		
+		fromAccount.decrease(amount);
+		toAccount.increase(amount);
+		
+	}
+
+
+	private Account getAccountOrThrow(int id) throws BankException {
+		Account account = accountDao.findById(id);
+		if(account == null) {
+			throw new BankException(String.format("Account with id %d does not exist.", id));
+		}
+		return account;
 	}
 }
