@@ -29,10 +29,12 @@ public class TransferServlet extends HttpServlet {
 		int fromId = Integer.parseInt(request.getParameter("from"));
 		int toId = Integer.parseInt(request.getParameter("to"));
 		double amount = Double.parseDouble(request.getParameter("amount"));
+		int delay = Integer.parseInt(request.getParameter("delay"));
 		
 		String message = null;
 		try {
-			bank.transfer(fromId, toId, amount);
+			//bank.transfer(fromId, toId, amount);
+			bank.scheduleTransfer(fromId, toId, amount, delay);
 			message = "Transfer successful";
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -3,11 +3,13 @@ package bank.service;
 import java.util.Arrays;
 
 import javax.interceptor.AroundInvoke;
+import javax.interceptor.AroundTimeout;
 import javax.interceptor.InvocationContext;
 
 public class LoggingInterceptor {
 
 	@AroundInvoke
+	@AroundTimeout
 	public Object logCall(InvocationContext ctx) throws Exception {
 		
 		System.out.print("Calling " + ctx.getMethod().getName());

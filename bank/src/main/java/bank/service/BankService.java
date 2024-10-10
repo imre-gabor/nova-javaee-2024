@@ -1,11 +1,16 @@
 package bank.service;
 
+import java.io.Serializable;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.Timeout;
+import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
@@ -71,6 +76,34 @@ public class BankService implements BankServiceLocal {
 		} catch (Exception e) {			
 			ctx.setRollbackOnly();
 			throw e;
+		}
+	}
+	
+	static class TransferInfo implements Serializable {
+		int fromId;
+		int toId;
+		double amount;
+		public TransferInfo(int fromId, int toId, double amount) {
+			super();
+			this.fromId = fromId;
+			this.toId = toId;
+			this.amount = amount;
+		}
+	}
+	
+	@Override
+	public void scheduleTransfer(int fromId, int toId, double amount, int delayInSeconds) {
+		ctx.getTimerService().createSingleActionTimer(delayInSeconds * 1000, new TimerConfig(new TransferInfo(fromId, toId, amount), false));
+	}
+	
+	@Timeout
+	public void executeScheduledTransfer(Timer timer) {
+		TransferInfo transferInfo = (TransferInfo) timer.getInfo();
+		try {
+			transfer(transferInfo.fromId, transferInfo.toId, transferInfo.amount);
+		} catch (Exception e) {
+			timer.cancel();	//enélkül +1 retry
+			e.printStackTrace();
 		}
 	}
 	

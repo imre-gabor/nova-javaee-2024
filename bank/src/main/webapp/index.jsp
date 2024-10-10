@@ -67,6 +67,10 @@
 				<td><input type="text" name="amount" /></td>
 			</tr>
 			<tr>
+				<td>Delay in seconds:</td>
+				<td><input type="text" name="delay" /></td>
+			</tr>
+			<tr>
 				<td colspan="2"><input type="submit" value="OK" /></td>
 			</tr>
 		</table>

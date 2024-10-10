@@ -19,4 +19,6 @@ public interface BankServiceLocal {
 
 	void logTransfer(int fromId, int toId, double amount);
 
+	void scheduleTransfer(int fromId, int toId, double amount, int delayInSeconds);
+
 }
