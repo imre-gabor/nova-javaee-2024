@@ -2,9 +2,12 @@ package bank.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +19,7 @@ import bank.dao.AccountDao;
 import bank.dao.ClientDao;
 import bank.exception.BankException;
 import bank.model.Account;
+import bank.model.Client;
 
 @ExtendWith(MockitoExtension.class)
 public class BankServiceTest {
@@ -68,5 +72,20 @@ public class BankServiceTest {
 	}
 	
 	@Test
-
+	public void testAccountProperlyCreatedForExistingClient() throws Exception {
+		Client client = new Client();
+		int clientid = 1;
+		client.setClientid(clientid);
+		client.setAccounts(new HashSet<>());
+		
+		when(clientDao.findById(clientid)).thenReturn(client);
+		
+		Account account = new Account(100.0);
+		bankService.createAccountForClient(account, clientid);
+		assertEquals(clientid, account.getClient().getClientid());
+		assertTrue(client.getAccounts().contains(account));
+		//TODO: assert createdate
+		
+		verify(accountDao).create(account);
+	}
 }
