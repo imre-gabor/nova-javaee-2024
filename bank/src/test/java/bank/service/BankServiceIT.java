@@ -11,6 +11,8 @@ import javax.ejb.EJB;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
+import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -23,6 +25,7 @@ import bank.model.Account;
 import bank.model.Client;
 
 @RunWith(Arquillian.class)
+@Transactional(value = TransactionMode.ROLLBACK)
 public class BankServiceIT {
 
 	@EJB
@@ -88,7 +91,7 @@ public class BankServiceIT {
 		Client client = null;
 		if(allClients.isEmpty()) {
 			client = new Client();
-			client.setName("abc");
+			client.setName("abcdef");
 			client.setAddress("address");
 			clientDao.create(client);
 		} else {

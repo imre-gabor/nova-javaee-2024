@@ -1,5 +1,6 @@
 package bank.model;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -65,6 +66,9 @@ public class Client  {
 	}
 
 	public Set<Account> getAccounts() {
+		if(this.accounts == null) {
+			this.accounts = new HashSet<>();
+		}
 		return this.accounts;
 	}
 
