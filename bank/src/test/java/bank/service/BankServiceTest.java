@@ -1,12 +1,13 @@
 package bank.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+//import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
 import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import bank.dao.AccountDao;
 import bank.dao.ClientDao;
-import bank.exception.BankException;
 import bank.model.Account;
 import bank.model.Client;
 
@@ -62,13 +62,15 @@ public class BankServiceTest {
 //		}
 		
 		//ASSERT
-		BankException e = assertThrows(BankException.class, () -> {
-			//ACT
-			bankService.createAccountForClient(new Account(), 2);
-		});
+//		BankException e = assertThrows(BankException.class, () -> {
+//			//ACT
+//			bankService.createAccountForClient(new Account(), 2);
+//		});
 		//ASSERT
-		assertEquals("Client does not exist", e.getMessage());
+//		assertEquals("Client does not exist", e.getMessage());
 		
+		assertThatThrownBy(() -> { bankService.createAccountForClient(new Account(), 2); })
+			.hasMessage("Client does not exist");
 	}
 	
 	@Test
@@ -82,9 +84,11 @@ public class BankServiceTest {
 		
 		Account account = new Account(100.0);
 		bankService.createAccountForClient(account, clientid);
-		assertEquals(clientid, account.getClient().getClientid());
-		assertTrue(client.getAccounts().contains(account));
-		//TODO: assert createdate
+//		assertEquals(clientid, account.getClient().getClientid());
+//		assertTrue(client.getAccounts().contains(account));
+		assertThat(account.getCreatedate()).isCloseTo(new Date(), 500);
+		assertThat(account.getClient().getClientid()).isEqualTo(clientid);
+		assertThat(client.getAccounts()).contains(account);
 		
 		verify(accountDao).create(account);
 	}
