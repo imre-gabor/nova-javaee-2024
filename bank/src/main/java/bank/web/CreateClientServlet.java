@@ -29,8 +29,9 @@ public class CreateClientServlet extends HttpServlet {
 		
 		String name = request.getParameter("name");
 		String address = request.getParameter("address");
+		String zipCode = request.getParameter("zipCode");
 		
-		Client c = new Client(address, name);
+		Client c = new Client(address, name, zipCode);
 		String message = null;
 		try {
 			bank.createClient(c);

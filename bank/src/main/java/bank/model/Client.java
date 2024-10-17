@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
 
 
 /**
@@ -24,9 +25,14 @@ public class Client  {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer clientid;
 
+	@NotEmpty
 	private String address;
 
+	@NotEmpty
 	private String name;
+	
+	@ZipCode
+	private String zipCode;
 
 	//bi-directional many-to-one association to Account
 	@OneToMany(mappedBy="client")
@@ -35,10 +41,11 @@ public class Client  {
 	public Client() {
 	}
 	
-	public Client(String address, String name) {
+	public Client(String address, String name, String zipCode) {
 		super();
 		this.address = address;
 		this.name = name;
+		this.zipCode = zipCode;
 	}
 
 	public Integer getClientid() {
@@ -74,6 +81,14 @@ public class Client  {
 
 	public void setAccounts(Set<Account> accounts) {
 		this.accounts = accounts;
+	}
+	
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
 	}
 
 	public Account addAccount(Account account) {
