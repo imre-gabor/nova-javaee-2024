@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bank.dao.AccountDao;
+import bank.dao.ClientDao;
 import bank.model.Account;
 import bank.model.Client;
 import bank.service.BankServiceLocal;
@@ -27,6 +28,9 @@ public class SearchAccountServlet extends HttpServlet {
 	
 	@EJB
 	AccountDao accountDao;
+	
+	@EJB
+	ClientDao clientDao;
 	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -62,10 +66,20 @@ public class SearchAccountServlet extends HttpServlet {
 			account.setClient(client);
 			client.setClientid(clientId);
 			client.setName(request.getParameter("clientName"));
-			accountDao.findByExample(account).forEach(a -> System.out.println(a.getAccountid()));
+			//accountDao.findByExample(account).forEach(a -> System.out.println(a.getAccountid()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		//1. eset: org.hibernate.LazyInitializationException
+		//2. eset: eager fetch a kapcsolaton: lefut, de 1 + N SELECT, nem hatékony
+		//3. eset: Hibernate-specifikus @Fetch(JOIN) használata, de nem lesz hatása, mert csak em.find-nál veszi figyelembe
+		//clientDao.findAll().forEach(c -> c.getAccounts().forEach(System.out::println));
+		
+		//4. eset: LEFT JOIN FETCH
+		//clientDao.findAllWithAccounts().forEach(c -> c.getAccounts().forEach(System.out::println));
+		//5. eset: Entity Graph
+		clientDao.findAllWithAccounts2().forEach(c -> c.getAccounts().forEach(System.out::println));
 		
 		request.getRequestDispatcher("index.jsp").forward(request, response);
 	}

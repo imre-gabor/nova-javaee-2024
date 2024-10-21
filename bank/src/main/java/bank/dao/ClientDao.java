@@ -1,7 +1,10 @@
 package bank.dao;
 
+import java.util.List;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -24,6 +27,15 @@ public class ClientDao extends AbstractDao<Client, Integer>{
 	@Override
 	public EntityManager em() {
 		return em;
+	}
+	
+	public List<Client> findAllWithAccounts(){
+		return em.createQuery("SELECT c FROM Client c LEFT JOIN FETCH c.accounts", Client.class).getResultList();
+	}
+	
+	public List<Client> findAllWithAccounts2() {
+		EntityGraph<?> eg = em.getEntityGraph("Client.withAccounts");
+		return em.createQuery("SELECT c FROM Client c", Client.class).setHint("javax.persistence.loadgraph", eg).getResultList();
 	}
 	
 //	

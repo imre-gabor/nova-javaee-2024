@@ -5,12 +5,18 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 
 /**
@@ -19,6 +25,7 @@ import javax.validation.constraints.NotEmpty;
  */
 @Entity
 @NamedQuery(name="Client.findAll", query="SELECT c FROM Client c")
+@NamedEntityGraph(name = "Client.withAccounts", attributeNodes = {@NamedAttributeNode("accounts")})
 public class Client  {
 
 	@Id
@@ -35,7 +42,8 @@ public class Client  {
 	private String zipCode;
 
 	//bi-directional many-to-one association to Account
-	@OneToMany(mappedBy="client")
+	@OneToMany(mappedBy="client", fetch = FetchType.EAGER)
+	//@Fetch(FetchMode.JOIN)
 	private Set<Account> accounts;
 
 	public Client() {
