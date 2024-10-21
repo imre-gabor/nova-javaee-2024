@@ -36,7 +36,8 @@
 		</table>
 	</form>
 	${resultOfClientCreation}
-
+	
+	
 	<h2>Create Account for Client</h2>
 	<form action="CreateAccountServlet">
 		<table>
@@ -54,6 +55,35 @@
 		</table>
 	</form>
 	${resultOfAccountCreation}
+	
+	<h2>Search Accounts</h2>
+	<form action="SearchAccountServlet">
+		<table>
+			<tr>
+				<td>AccountId:</td>
+				<td><input type="text" name="accountId" /></td>
+			</tr>
+			<tr>
+				<td>Create date:</td>
+				<td><input type="text" name="createDate" /></td>
+			</tr>
+			<tr>
+				<td>ClientId:</td>
+				<td><input type="text" name="clientId" /></td>
+			</tr>
+			<tr>
+				<td>ClientName:</td>
+				<td><input type="text" name="clientName" /></td>
+			</tr>
+			<tr>
+				<td>Balance:</td>
+				<td><input type="text" name="balance" /></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="submit" value="OK" /></td>
+			</tr>
+		</table>
+	</form>
 
 	<h2>Transfer</h2>
 	<form action="TransferServlet">
