@@ -33,8 +33,8 @@ public class TransferServlet extends HttpServlet {
 		
 		String message = null;
 		try {
-			//bank.transfer(fromId, toId, amount);
-			bank.scheduleTransfer(fromId, toId, amount, delay);
+			bank.transfer(fromId, toId, amount);
+			//bank.scheduleTransfer(fromId, toId, amount, delay);
 			message = "Transfer successful";
 		} catch (Exception e) {
 			e.printStackTrace();
